@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEBTOON INFO</title>
+    <link rel="stylesheet" href="/template/fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <!-- https://fonts.google.com/ -->
+    <link rel="stylesheet" href="/template/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/template/css/templatemo-video-catalog.css">
+    <link rel="stylesheet" href="/jqcloud/jqcloud.css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+    <script src="/jqcloud/jqcloud-1.0.4.js"></script>
+</head>
+<style>
+    #wordcloud {
+        width:80%;
+    }
+</style>
+<body>
+<p id="wordlist" style="display:none">
+    [
+    <% for(var i=0;i<keywords.length;i++) {%>
+    {text : <%=keywords[i].text%>, weight: <%=keywords[i].weight%>},
+    <%}%>
+    ]
+</p>
+
+<div class="tm-page-wrap mx-auto">
+    <div class="position-relative">
+        <div class="potition-absolute tm-site-header">
+            <div class="container-fluid position-relative">
+                <div class="row">
+                    <div class="col-5 col-md-8 ml-auto mr-0">
+                        <div class="tm-site-nav">
+                            <nav class="navbar navbar-expand-lg mr-0 ml-auto" id="tm-main-nav">
+                                <button class="navbar-toggler tm-bg-black py-2 px-3 mr-0 ml-auto collapsed" type="button"
+                                        data-toggle="collapse" data-target="#navbar-nav" aria-controls="navbar-nav"
+                                        aria-expanded="false" aria-label="Toggle navigation">
+                                        <span>
+                                            <i class="fas fa-bars tm-menu-closed-icon"></i>
+                                            <i class="fas fa-times tm-menu-opened-icon"></i>
+                                        </span>
+                                </button>
+                                <div class="collapse navbar-collapse tm-nav" id="navbar-nav">
+                                    <ul class="navbar-nav text-uppercase">
+                                        <li class="nav-item">
+                                            <a class="nav-link tm-nav-link" href="/">HOME</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <%if(user_id==-1){%>
+                                                <a class="nav-link tm-nav-link" href="/login">LOGIN</a>
+                                            <%}else{%>
+                                            <a class="nav-link tm-nav-link" href="/logout">LOGOUT</a>
+                                            <%}%>
+                                        </li>
+                                        <li class="nav-item active">
+                                            <a class="nav-link tm-nav-link" href="/users">MY PAGE </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tm-welcome-container tm-fixed-header tm-fixed-header-1">
+            <div class="text-center">
+                <p class="pt-5 px-3 tm-welcome-text tm-welcome-text-2 mb-1 text-white mx-auto"><h1><span style="color:#FFFFFF;background-color: #A9A9A9;">WEBTOON INFO</h1>
+                <br> <h3><span style="color:#FFFFFF;background-color: #A9A9A9">HASHTAGS, WORDCLOUD, SUGGESTIONS</span></h3></p>
+            </div>
+        </div>
+        <!-- Header image -->
+        <div id="tm-fixed-header-bg"></div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid">
+        <div class="mx-auto tm-content-container">
+            <main>
+                <div class="mx-auto tm-content-container mt-4 px-3 mb-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-page-title mb-5 tm-text-primary"><%=info[0].title_name%></h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 mb-5 pt-3">
+                            <div class="media tm-testimonial">
+                                <a href="<%= info[0].webtoon_link %>">
+                                    <img alt="img" width="200" height="200" src="<%= info[0].thum_link %>"/>
+                                </a>
+                               <p class="media-body pt-3 tm-testimonial-text">
+                                   &emsp;<%= info[0].week %> webtoon<br>
+                                    <% for(var i = 0;i < hashtags.length;i++){ %>
+                                       &nbsp; <a href="/webtoons/hashtag/<%= hashtags[i].content %>">#<%= hashtags[i].content %> </a> &emsp;
+                                    <% } %>
+                                   <br>
+                                Suggestions:<br>
+                                <% for(var i = 0;i < suggestions.length;i++){ %>
+                                    <a href="/webtoons/<%= suggestions[i].title_id%>"><%= suggestions[i].title_name %></a>
+                                   &nbsp;
+                                <% } %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-5 pt-3">
+                            <div class="media tm-testimonial">
+                                <p class="media-body pt-3 tm-testimonial-text">
+                                <div id="wordcloud" style="width: 550px; height: 350px; border: 1px solid #ccc;"></div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div> <!-- .tm-content-container -->
+    </div>
+</div>
+
+<script type="text/javascript">
+    var word_list = document.getElementById("wordlist").innerText;
+    var result=[];
+    var a=word_list.split("{");
+    for(var i=0;i<a.length;i++){
+        if(!a[i].includes("text:")){
+            a.splice(i,i+1);
+        }
+    }
+    var text=[]; var weight=[];
+    //find last rank num
+    var index1=a[a.length-1].indexOf(":")
+    var index3=a[a.length-1].indexOf(":", index1+1)
+    var index4=a[a.length-1].indexOf("}");
+    var last_rank=a[a.length-1].slice(index3+2,index4);
+    last_rank=Number(last_rank);
+    for(var i=0;i<a.length;i++){
+        var index1=a[i].indexOf(":")
+        var index2=a[i].indexOf(",");
+        var t= a[i].slice(index1+2,index2);
+        text.push(t)
+        var index3=a[i].indexOf(":", index1+1)
+        var index4=a[i].indexOf("}");
+        var w= a[i].slice(index3+2,index4);
+        w=Number(w)
+        weight.push(last_rank*2-w)
+    }
+
+    var result=[];
+    for(var i=0;i<text.length;i++){
+        if((i+2)%2 == 0) {
+            var word = {
+                text: text[i],
+                weight: weight[i]
+            }
+            result.push(word)
+        }else{
+            var word = {
+                text: text[i],
+                weight: weight[i],
+                html:{"class":"vertical"}
+            }
+            result.push(word)
+        }
+    }
+    $(function () {
+        $("#wordcloud").jQCloud(result,{
+            autoResize: true
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
+

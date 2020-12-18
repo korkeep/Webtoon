@@ -1,0 +1,22 @@
+Package        Version     
+-------------- ------------
+beautifulsoup4 4.9.0       
+certifi        2020.4.5.1  
+chardet        3.0.4       
+idna           2.9         
+joblib         0.14.1      
+numpy          1.18.2      
+pip            20.0.2      
+psutil         5.7.0       
+requests       2.23.0      
+scikit-learn   0.22.2.post1
+scipy          1.4.1       
+selenium       3.141.0     
+setuptools     41.2.0      
+soupsieve      2.0         
+soynlp         0.0.493     
+urllib3        1.25.8
+pandas
+matplotlib
+gensim
+pyarrow
