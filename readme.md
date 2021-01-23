@@ -236,7 +236,7 @@ EER Diagram: <br/>
 - List화된 것들을 앞에서 체크한 키워드와 중복되는 것이 없는지 확인한다. (교수, 교수가, 교수는 = '교수'로 묶여야)
 - 중복되는 것은, 현재 스트링 인덱스 슬라이싱 알고리즘을 활용해 비교한다. (rank_added.py 이용)
 
-# 추출한 해쉬태그 csv 형태로 데이타 전달  
+**Step5:** 추출한 해쉬태그 csv 형태로 데이타 전달  
 - Webtoon_ID, Hashtag_keword, Rank 순으로 hashtag.csv를 만들어 프론트에 전달한다.
 
 ## Demonstration
